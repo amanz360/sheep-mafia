@@ -31,6 +31,7 @@ import salsa.resources.ActorService;
 
 // End SALSA compiler generated import delcarations.
 
+import java.util.Arrays;
 
 public class Star extends UniversalActor  {
 	public static void main(String args[]) {
@@ -172,8 +173,8 @@ public class Star extends UniversalActor  {
 		}
 	}
 
-	public UniversalActor construct (int _x, int _y, int _z) {
-		Object[] __arguments = { new Integer(_x), new Integer(_y), new Integer(_z) };
+	public UniversalActor construct (Double _x, Double _y, Double _z) {
+		Object[] __arguments = { _x, _y, _z };
 		this.send( new Message(this, this, "construct", __arguments, null, null) );
 		return this;
 	}
@@ -193,14 +194,6 @@ public class Star extends UniversalActor  {
 			self.setUAN(getUAN());
 			self.setUAL(getUAL());
 			self.activateGC();
-		}
-
-		public void preAct(String[] arguments) {
-			getActorMemory().getInverseList().removeInverseReference("rmsp://me",1);
-			{
-				Object[] __args={arguments};
-				self.send( new Message(self,self, "act", __args, null,null,false) );
-			}
 		}
 
 		public State() {
@@ -270,15 +263,69 @@ public class Star extends UniversalActor  {
 			}
 		}
 
-		int x, y, z;
-		int minDist, maxDist;
-		int avgDist = 0;
-		void construct(int _x, int _y, int _z){
+		Double x, y, z;
+		Double minDist = -1.0, maxDist = 0.0;
+		Double avgDist = 0.0;
+		int count = 0;
+		void construct(Double _x, Double _y, Double _z){
 			x = _x;
 			y = _y;
 			z = _z;
 		}
-		public void act(String arguments[]) {
+		public Double getDist(Double otherData[]) {
+			return Math.sqrt(Math.pow(x-otherData[0], 2)+Math.pow(y-otherData[1], 2)+Math.pow(z-otherData[2], 2));
+		}
+		public void compare(Star other) {
+			{
+				Token token_2_0 = new Token();
+				Token token_2_1 = new Token();
+				// other<-getCoord()
+				{
+					Object _arguments[] = {  };
+					Message message = new Message( self, other, "getCoord", _arguments, null, token_2_0 );
+					__messages.add( message );
+				}
+				// getDist(token)
+				{
+					Object _arguments[] = { token_2_0 };
+					Message message = new Message( self, self, "getDist", _arguments, token_2_0, token_2_1 );
+					__messages.add( message );
+				}
+				// updateStats(token, other)
+				{
+					Object _arguments[] = { token_2_1, other };
+					Message message = new Message( self, self, "updateStats", _arguments, token_2_1, null );
+					__messages.add( message );
+				}
+			}
+		}
+		public void updateStats(Double dist, Star other) {
+			if (minDist==-1||dist<minDist) {minDist = dist;
+}			if (dist>maxDist) {maxDist = dist;
+}			avgDist = (avgDist*count+dist)/++count;
+			{
+				// other<-getUpdate(dist)
+				{
+					Object _arguments[] = { dist };
+					Message message = new Message( self, other, "getUpdate", _arguments, null, currentMessage.getContinuationToken() );
+					__messages.add( message );
+				}
+				throw new CurrentContinuationException();
+			}
+		}
+		public void getUpdate(Double dist) {
+			if (minDist==-1||dist<minDist) {minDist = dist;
+}			if (dist>maxDist) {maxDist = dist;
+}			avgDist = (avgDist*count+dist)/++count;
+		}
+		public Double[] getCoord() {
+			Double coord[] = new Double[3];
+			coord[0] = x;
+			coord[1] = y;
+			coord[2] = z;
+			return coord;
+		}
+		public void print() {
 			{
 				// standardOutput<-println("(x,y,z) = ("+x+","+y+","+z+")")
 				{
@@ -287,12 +334,34 @@ public class Star extends UniversalActor  {
 					__messages.add( message );
 				}
 			}
-		}
-		public void print() {
 			{
-				// standardOutput<-println("(x,y,z) = ("+x+","+y+","+z+")")
+				// standardOutput<-println("minDist = "+minDist)
 				{
-					Object _arguments[] = { "(x,y,z) = ("+x+","+y+","+z+")" };
+					Object _arguments[] = { "minDist = "+minDist };
+					Message message = new Message( self, standardOutput, "println", _arguments, null, null );
+					__messages.add( message );
+				}
+			}
+			{
+				// standardOutput<-println("maxDist = "+maxDist)
+				{
+					Object _arguments[] = { "maxDist = "+maxDist };
+					Message message = new Message( self, standardOutput, "println", _arguments, null, null );
+					__messages.add( message );
+				}
+			}
+			{
+				// standardOutput<-println("avgDist = "+avgDist)
+				{
+					Object _arguments[] = { "avgDist = "+avgDist };
+					Message message = new Message( self, standardOutput, "println", _arguments, null, null );
+					__messages.add( message );
+				}
+			}
+			{
+				// standardOutput<-println("Total stars compared = "+count)
+				{
+					Object _arguments[] = { "Total stars compared = "+count };
 					Message message = new Message( self, standardOutput, "println", _arguments, null, null );
 					__messages.add( message );
 				}

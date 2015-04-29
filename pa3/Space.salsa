@@ -1,14 +1,66 @@
 module pa3;
 
+import java.lang.*;
+import java.io.*;
+import java.util.*;
+
 behavior Space 
 {
        
     void act(String arguments[])
     {
 
-    	Star test = new Star(10, 15, 20);
+    	if(arguments.length != 1)
+    	{
+    		standardError <- println("ERROR - USAGE: pa3.Space <file.txt>");
+    	}
 
-    	test<-print();
+    	String line;
+    	Star stars[] = new Star[0];
+    	int numStars = 0;
+    	try
+    	{
+    		BufferedReader in = new BufferedReader(new FileReader(arguments[0]));
 
+    		line = in.readLine();
+    		numStars = Integer.parseInt(line);
+    		stars = new Star[numStars];
+    		for(int i = 0; i < numStars; i++)
+    		{
+    			line = in.readLine();
+    			String nums[] = line.split(" ");
+    			Double x = Double.parseDouble(nums[0]);
+    			Double y = Double.parseDouble(nums[1]);
+    			Double z = Double.parseDouble(nums[2]);
+
+    			stars[i] = new Star(x, y, z);
+    		}
+    		in.close();
+    	} catch(IOException ioe)
+    	{
+    		standardOutput<-println("ERR: Can't open file " + arguments[0]);
+    	}
+    	
+    	join
+    	{
+	    	for(int i = 0; i < numStars-1; i++)
+	    	{
+	    		for(int j = i+1; j < numStars; j++)
+	    		{
+	    			stars[i]<-compare(stars[j]);
+	    		}
+	    	}
+    	}@printStars(stars);
     }
+
+    
+
+    void printStars(Star stars[])
+    {
+    	for(int i = 0; i < stars.length; i++)
+    	{
+    		stars[i]<-print();
+    	}
+    }
+
 }

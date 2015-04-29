@@ -31,6 +31,9 @@ import salsa.resources.ActorService;
 
 // End SALSA compiler generated import delcarations.
 
+import java.lang.*;
+import java.io.*;
+import java.util.*;
 
 public class Space extends UniversalActor  {
 	public static void main(String args[]) {
@@ -265,13 +268,79 @@ public class Space extends UniversalActor  {
 		}
 
 		public void act(String arguments[]) {
-			Star test = ((Star)new Star(this).construct(10, 15, 20));
-			{
-				// test<-print()
+			if (arguments.length!=1) {{
 				{
-					Object _arguments[] = {  };
-					Message message = new Message( self, test, "print", _arguments, null, null );
+					// standardError<-println("ERROR - USAGE: pa3.Space <file.txt>")
+					{
+						Object _arguments[] = { "ERROR - USAGE: pa3.Space <file.txt>" };
+						Message message = new Message( self, standardError, "println", _arguments, null, null );
+						__messages.add( message );
+					}
+				}
+			}
+}			String line;
+			Star stars[] = new Star[0];
+			int numStars = 0;
+			try {
+				BufferedReader in = new BufferedReader(new FileReader(arguments[0]));
+				line = in.readLine();
+				numStars = Integer.parseInt(line);
+				stars = new Star[numStars];
+				for (int i = 0; i<numStars; i++){
+					line = in.readLine();
+					String nums[] = line.split(" ");
+					Double x = Double.parseDouble(nums[0]);
+					Double y = Double.parseDouble(nums[1]);
+					Double z = Double.parseDouble(nums[2]);
+					stars[i] = ((Star)new Star(this).construct(x, y, z));
+				}
+				in.close();
+			}
+			catch (IOException ioe) {
+				{
+					// standardOutput<-println("ERR: Can't open file "+arguments[0])
+					{
+						Object _arguments[] = { "ERR: Can't open file "+arguments[0] };
+						Message message = new Message( self, standardOutput, "println", _arguments, null, null );
+						__messages.add( message );
+					}
+				}
+			}
+
+			{
+				Token token_2_0 = new Token();
+				// join block
+				token_2_0.setJoinDirector();
+				for (int i = 0; i<numStars-1; i++){
+					for (int j = i+1; j<numStars; j++){
+						{
+							// stars[i]<-compare(stars[j])
+							{
+								Object _arguments[] = { stars[j] };
+								Message message = new Message( self, stars[i], "compare", _arguments, null, token_2_0 );
+								__messages.add( message );
+							}
+						}
+					}
+				}
+				addJoinToken(token_2_0);
+				// printStars(stars)
+				{
+					Object _arguments[] = { stars };
+					Message message = new Message( self, self, "printStars", _arguments, token_2_0, null );
 					__messages.add( message );
+				}
+			}
+		}
+		public void printStars(Star stars[]) {
+			for (int i = 0; i<stars.length; i++){
+				{
+					// stars[i]<-print()
+					{
+						Object _arguments[] = {  };
+						Message message = new Message( self, stars[i], "print", _arguments, null, null );
+						__messages.add( message );
+					}
 				}
 			}
 		}

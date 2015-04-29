@@ -1,25 +1,63 @@
 module pa3;
 
+import java.util.Arrays;
+
 behavior Star
 {
-	int x, y, z;
-	int minDist, maxDist;
-	int avgDist = 0;
+	Double x, y, z;
+	Double minDist = -1.0, maxDist = 0.0;
+	Double avgDist = 0.0;
+	int count = 0;
 
-	Star(int _x, int _y, int _z)
+	Star(Double _x, Double _y, Double _z)
 	{
 		x = _x;
 		y = _y;
 		z = _z;
 	}
 
-	void act(String arguments[])
+	Double getDist(Double otherData[])
 	{
-		standardOutput <- println("(x,y,z) = (" + x + "," + y + "," + z + ")");
+		return Math.sqrt(Math.pow(x-otherData[0],2) + Math.pow(y-otherData[1],2) + Math.pow(z-otherData[2],2));
+	}
+
+	void compare(Star other)
+	{
+		other<-getCoord()
+		@getDist(token)@updateStats(token, other);
+	}
+
+	void updateStats(Double dist, Star other)
+	{
+		if(minDist == -1 || dist < minDist)	minDist = dist;
+		if(dist > maxDist)	maxDist = dist;
+		avgDist = (avgDist*count + dist)/++count;
+
+		other<-getUpdate(dist)@currentContinuation;
+	}
+
+	void getUpdate(Double dist)
+	{
+		if(minDist == -1 || dist < minDist)	minDist = dist;
+		if(dist > maxDist)	maxDist = dist;
+		avgDist = (avgDist*count + dist)/++count;
+	}
+
+	Double[] getCoord()
+	{
+		Double coord[] = new Double[3];
+		coord[0] = x;
+		coord[1] = y;
+		coord[2] = z;
+		return coord;
 	}
 
 	void print()
 	{
 		standardOutput <- println("(x,y,z) = (" + x + "," + y + "," + z + ")");	
+		standardOutput <-println("minDist = " + minDist);
+		standardOutput <-println("maxDist = " + maxDist);
+		standardOutput <-println("avgDist = " + avgDist);
+		standardOutput <-println("Total stars compared = " + count);
 	}
 }
