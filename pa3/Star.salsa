@@ -1,0 +1,25 @@
+module pa3;
+
+behavior Star
+{
+	int x, y, z;
+	int minDist, maxDist;
+	int avgDist = 0;
+
+	Star(int _x, int _y, int _z)
+	{
+		x = _x;
+		y = _y;
+		z = _z;
+	}
+
+	void act(String arguments[])
+	{
+		standardOutput <- println("(x,y,z) = (" + x + "," + y + "," + z + ")");
+	}
+
+	void print()
+	{
+		standardOutput <- println("(x,y,z) = (" + x + "," + y + "," + z + ")");	
+	}
+}

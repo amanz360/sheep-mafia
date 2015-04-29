@@ -1,0 +1,14 @@
+module pa3;
+
+behavior Space 
+{
+       
+    void act(String arguments[])
+    {
+
+    	Star test = new Star(10, 15, 20);
+
+    	test<-print();
+
+    }
+}
