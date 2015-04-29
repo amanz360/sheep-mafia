@@ -31,11 +31,9 @@ import salsa.resources.ActorService;
 
 // End SALSA compiler generated import delcarations.
 
-import java.lang.*;
-import java.io.*;
-import java.util.*;
+import java.util.Arrays;
 
-public class Space extends UniversalActor  {
+public class CapitalStarWorker extends UniversalActor  {
 	public static void main(String args[]) {
 		UAN uan = null;
 		UAL ual = null;
@@ -70,7 +68,7 @@ public class Space extends UniversalActor  {
 			ual = new UAL( ServiceFactory.getTheater().getLocation() + System.getProperty("identifier"));
 		}
 		RunTime.receivedMessage();
-		Space instance = (Space)new Space(uan, ual,null).construct();
+		CapitalStarWorker instance = (CapitalStarWorker)new CapitalStarWorker(uan, ual,null).construct();
 		gc.WeakReference instanceRef=new gc.WeakReference(uan,ual);
 		{
 			Object[] _arguments = { args };
@@ -83,18 +81,18 @@ public class Space extends UniversalActor  {
 		RunTime.finishedProcessingMessage();
 	}
 
-	public static ActorReference getReferenceByName(UAN uan)	{ return new Space(false, uan); }
-	public static ActorReference getReferenceByName(String uan)	{ return Space.getReferenceByName(new UAN(uan)); }
-	public static ActorReference getReferenceByLocation(UAL ual)	{ return new Space(false, ual); }
+	public static ActorReference getReferenceByName(UAN uan)	{ return new CapitalStarWorker(false, uan); }
+	public static ActorReference getReferenceByName(String uan)	{ return CapitalStarWorker.getReferenceByName(new UAN(uan)); }
+	public static ActorReference getReferenceByLocation(UAL ual)	{ return new CapitalStarWorker(false, ual); }
 
-	public static ActorReference getReferenceByLocation(String ual)	{ return Space.getReferenceByLocation(new UAL(ual)); }
-	public Space(boolean o, UAN __uan)	{ super(false,__uan); }
-	public Space(boolean o, UAL __ual)	{ super(false,__ual); }
-	public Space(UAN __uan,UniversalActor.State sourceActor)	{ this(__uan, null, sourceActor); }
-	public Space(UAL __ual,UniversalActor.State sourceActor)	{ this(null, __ual, sourceActor); }
-	public Space(UniversalActor.State sourceActor)		{ this(null, null, sourceActor);  }
-	public Space()		{  }
-	public Space(UAN __uan, UAL __ual, Object obj) {
+	public static ActorReference getReferenceByLocation(String ual)	{ return CapitalStarWorker.getReferenceByLocation(new UAL(ual)); }
+	public CapitalStarWorker(boolean o, UAN __uan)	{ super(false,__uan); }
+	public CapitalStarWorker(boolean o, UAL __ual)	{ super(false,__ual); }
+	public CapitalStarWorker(UAN __uan,UniversalActor.State sourceActor)	{ this(__uan, null, sourceActor); }
+	public CapitalStarWorker(UAL __ual,UniversalActor.State sourceActor)	{ this(null, __ual, sourceActor); }
+	public CapitalStarWorker(UniversalActor.State sourceActor)		{ this(null, null, sourceActor);  }
+	public CapitalStarWorker()		{  }
+	public CapitalStarWorker(UAN __uan, UAL __ual, Object obj) {
 		//decide the type of sourceActor
 		//if obj is null, the actor must be the startup actor.
 		//if obj is an actorReference, this actor is created by a remote actor
@@ -117,7 +115,7 @@ public class Space extends UniversalActor  {
 			      setSource(sourceActor.getUAN(), sourceActor.getUAL());
 			      activateGC();
 			    }
-			    createRemotely(__uan, __ual, "pa3.Space", sourceRef);
+			    createRemotely(__uan, __ual, "pa3.CapitalStarWorker", sourceRef);
 			  }
 
 			  // local creation
@@ -175,6 +173,12 @@ public class Space extends UniversalActor  {
 		}
 	}
 
+	public UniversalActor construct (Star _stars[], int _range, int _workerNum, int _overflow) {
+		Object[] __arguments = { _stars, new Integer(_range), new Integer(_workerNum), new Integer(_overflow) };
+		this.send( new Message(this, this, "construct", __arguments, null, null) );
+		return this;
+	}
+
 	public UniversalActor construct() {
 		Object[] __arguments = { };
 		this.send( new Message(this, this, "construct", __arguments, null, null) );
@@ -182,22 +186,14 @@ public class Space extends UniversalActor  {
 	}
 
 	public class State extends UniversalActor .State {
-		public Space self;
+		public CapitalStarWorker self;
 		public void updateSelf(ActorReference actorReference) {
-			((Space)actorReference).setUAL(getUAL());
-			((Space)actorReference).setUAN(getUAN());
-			self = new Space(false,getUAL());
+			((CapitalStarWorker)actorReference).setUAL(getUAL());
+			((CapitalStarWorker)actorReference).setUAN(getUAN());
+			self = new CapitalStarWorker(false,getUAL());
 			self.setUAN(getUAN());
 			self.setUAL(getUAL());
 			self.activateGC();
-		}
-
-		public void preAct(String[] arguments) {
-			getActorMemory().getInverseList().removeInverseReference("rmsp://me",1);
-			{
-				Object[] __args={arguments};
-				self.send( new Message(self,self, "act", __args, null,null,false) );
-			}
 		}
 
 		public State() {
@@ -206,7 +202,7 @@ public class Space extends UniversalActor  {
 
 		public State(UAN __uan, UAL __ual) {
 			super(__uan, __ual);
-			addClassName( "pa3.Space$State" );
+			addClassName( "pa3.CapitalStarWorker$State" );
 			addMethodsForClasses();
 		}
 
@@ -267,98 +263,142 @@ public class Space extends UniversalActor  {
 			}
 		}
 
-		public void act(String arguments[]) {
-			if (arguments.length!=1) {{
+		Star stars[];
+		Double x, y, z;
+		Double dist;
+		int workerNum = 0;
+		int range = 0;
+		int overflow = 0;
+		void construct(Star _stars[], int _range, int _workerNum, int _overflow){
+			stars = _stars;
+						{
+				Token token_2_0 = new Token();
+				// stars[0]<-getAvgDist()
 				{
-					// standardError<-println("ERROR - USAGE: pa3.Space <file.txt>")
+					Object _arguments[] = {  };
+					Message message = new Message( self, stars[0], "getAvgDist", _arguments, null, token_2_0 );
+					__messages.add( message );
+				}
+				// setDist(token)
+				{
+					Object _arguments[] = { token_2_0 };
+					Message message = new Message( self, self, "setDist", _arguments, token_2_0, null );
+					__messages.add( message );
+				}
+			}
+						{
+				Token token_2_0 = new Token();
+				// stars[0]<-getCoord()
+				{
+					Object _arguments[] = {  };
+					Message message = new Message( self, stars[0], "getCoord", _arguments, null, token_2_0 );
+					__messages.add( message );
+				}
+				// setCoord(token)
+				{
+					Object _arguments[] = { token_2_0 };
+					Message message = new Message( self, self, "setCoord", _arguments, token_2_0, null );
+					__messages.add( message );
+				}
+			}
+			range = _range;
+			workerNum = _workerNum;
+			overflow = _overflow;
+		}
+		public void setDist(Double _dist) {
+			dist = _dist;
+		}
+		public void setCoord(Double coord[]) {
+			x = coord[0];
+			y = coord[1];
+			z = coord[2];
+		}
+		public int findBest(Object arr[]) {
+			int index = -1;
+			for (int i = 0; i<arr.length; i++){
+				if ((Double)arr[i]<dist) {{
+					dist = (Double)arr[i];
+					index = i;
+				}
+}			}
+			return index;
+		}
+		public void updateIdeal(int index, int beginning) {
+			if (index!=-1) {{
+				{
+					Token token_3_0 = new Token();
+					Token token_3_1 = new Token();
+					Token token_3_2 = new Token();
+					// stars[beginning+index]<-getCoord()
 					{
-						Object _arguments[] = { "ERROR - USAGE: pa3.Space <file.txt>" };
-						Message message = new Message( self, standardError, "println", _arguments, null, null );
+						Object _arguments[] = {  };
+						Message message = new Message( self, stars[beginning+index], "getCoord", _arguments, null, token_3_0 );
+						__messages.add( message );
+					}
+					// setCoord(token)
+					{
+						Object _arguments[] = { token_3_0 };
+						Message message = new Message( self, self, "setCoord", _arguments, token_3_0, token_3_1 );
+						__messages.add( message );
+					}
+					// stars[beginning+index]<-getAvgDist()
+					{
+						Object _arguments[] = {  };
+						Message message = new Message( self, stars[beginning+index], "getAvgDist", _arguments, token_3_1, token_3_2 );
+						__messages.add( message );
+					}
+					// setDist(token)
+					{
+						Object _arguments[] = { token_3_2 };
+						Message message = new Message( self, self, "setDist", _arguments, token_3_2, null );
 						__messages.add( message );
 					}
 				}
 			}
-}			String line;
-			Star stars[] = new Star[0];
-			int numStars = 0;
-			try {
-				BufferedReader in = new BufferedReader(new FileReader(arguments[0]));
-				line = in.readLine();
-				numStars = Integer.parseInt(line);
-				stars = new Star[numStars];
-				for (int i = 0; i<numStars; i++){
-					line = in.readLine();
-					String nums[] = line.split(" ");
-					Double x = Double.parseDouble(nums[0]);
-					Double y = Double.parseDouble(nums[1]);
-					Double z = Double.parseDouble(nums[2]);
-					stars[i] = ((Star)new Star(this).construct(x, y, z));
-				}
-				in.close();
-			}
-			catch (IOException ioe) {
-				{
-					// standardOutput<-println("ERR: Can't open file "+arguments[0])
-					{
-						Object _arguments[] = { "ERR: Can't open file "+arguments[0] };
-						Message message = new Message( self, standardOutput, "println", _arguments, null, null );
-						__messages.add( message );
-					}
-				}
-			}
-
+}		}
+		public void check() {
+			int beginning = range*workerNum;
+			int ending = beginning+range+overflow;
 			{
 				Token token_2_0 = new Token();
+				Token token_2_1 = new Token();
 				// join block
 				token_2_0.setJoinDirector();
-				for (int i = 0; i<numStars-1; i++){
-					for (int j = i+1; j<numStars; j++){
+				for (int i = beginning; i<ending; i++){
+					{
+						// stars[i]<-getAvgDist()
 						{
-							// stars[i]<-compare(stars[j])
-							{
-								Object _arguments[] = { stars[j] };
-								Message message = new Message( self, stars[i], "compare", _arguments, null, token_2_0 );
-								__messages.add( message );
-							}
+							Object _arguments[] = {  };
+							Message message = new Message( self, stars[i], "getAvgDist", _arguments, null, token_2_0 );
+							__messages.add( message );
 						}
 					}
 				}
 				addJoinToken(token_2_0);
-				// findOptimalStars(stars)
+				// findBest(token)
 				{
-					Object _arguments[] = { stars };
-					Message message = new Message( self, self, "findOptimalStars", _arguments, token_2_0, null );
+					Object _arguments[] = { token_2_0 };
+					Message message = new Message( self, self, "findBest", _arguments, token_2_0, token_2_1 );
 					__messages.add( message );
 				}
-			}
-		}
-		public void findOptimalStars(Star stars[]) {
-			HubStar hub = ((HubStar)new HubStar(this).construct(stars));
-			CapitalStar capital = ((CapitalStar)new CapitalStar(this).construct(stars, 5));
-			{
-				// capital<-compute()
+				// updateIdeal(token, beginning)
 				{
-					Object _arguments[] = {  };
-					Message message = new Message( self, capital, "compute", _arguments, null, null );
-					Object[] _propertyInfo = { new Integer(1000) };
-					message.setProperty( "wait", _propertyInfo );
+					Object _arguments[] = { token_2_1, beginning };
+					Message message = new Message( self, self, "updateIdeal", _arguments, token_2_1, currentMessage.getContinuationToken() );
 					__messages.add( message );
 				}
+				throw new CurrentContinuationException();
 			}
 		}
-		public void printStars(Star stars[]) {
-			for (int i = 0; i<stars.length; i++){
-				{
-					// stars[i]<-print()
-					{
-						Object _arguments[] = {  };
-						Message message = new Message( self, stars[i], "print", _arguments, null, null );
-						Object[] _propertyInfo = { new Integer(50) };
-						message.setProperty( "delay", _propertyInfo );
-						__messages.add( message );
-					}
-				}
-			}
+		public Double getDist() {
+			return dist;
+		}
+		public Double[] getCoord() {
+			Double coord[] = new Double[3];
+			coord[0] = x;
+			coord[1] = y;
+			coord[2] = z;
+			return coord;
 		}
 	}
 }

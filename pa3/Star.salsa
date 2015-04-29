@@ -24,7 +24,7 @@ behavior Star
 	void compare(Star other)
 	{
 		other<-getCoord()
-		@getDist(token)@updateStats(token, other);
+		@getDist(token)@updateStats(token, other)@currentContinuation;
 	}
 
 	void updateStats(Double dist, Star other)
@@ -52,12 +52,48 @@ behavior Star
 		return coord;
 	}
 
+	void setCoord(Double coord[])
+	{
+		x = coord[0];
+		y = coord[1];
+		z = coord[2];
+	}
+
+	Double getMinDist()
+	{
+		return minDist;
+	}
+
+	void setMinDist(Double dist)
+	{
+		minDist = dist;
+	}
+
+	Double getMaxDist()
+	{
+		return maxDist;
+	}
+
+	void setMaxDist(Double dist)
+	{
+		maxDist = dist;
+	}
+
+	Double getAvgDist()
+	{
+		return avgDist;
+	}
+
+	void setAvgDist(Double dist)
+	{
+		avgDist = dist;
+	}
 	void print()
 	{
-		standardOutput <- println("(x,y,z) = (" + x + "," + y + "," + z + ")");	
-		standardOutput <-println("minDist = " + minDist);
-		standardOutput <-println("maxDist = " + maxDist);
-		standardOutput <-println("avgDist = " + avgDist);
-		standardOutput <-println("Total stars compared = " + count);
+		standardOutput <- println("(" + x + "," + y + "," + z + ")");
+		//standardOutput <- println("minDist = " + minDist);
+		//standardOutput <- println("maxDist = " + maxDist);
+		//standardOutput <- println("avgdist = " + avgDist);
+		//standardOutput <- println("Compared " + count + " stars");
 	}
 }

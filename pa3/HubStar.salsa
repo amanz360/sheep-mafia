@@ -1,0 +1,56 @@
+module pa3;
+
+import java.util.Arrays;
+
+behavior HubStar
+{
+	Star stars[];
+	Double minMaximalDist = -1.0;
+	Double x = 0.0, y = 0.0, z = 0.0;
+
+	HubStar(Star _stars[])
+	{
+		stars = _stars;
+	}
+
+	void setDist(Double dist)
+	{
+		minMaximalDist = dist;
+	}
+
+	void check(Double dist, Star star)
+	{
+		if(minMaximalDist == -1.0 || dist < minMaximalDist)
+		{
+			setDist(dist)@
+			star<-getCoord()@setCoord(token)@currentContinuation;
+		}
+	}
+
+	void setCoord(Double coord[])
+	{
+		x = coord[0];
+		y = coord[1];
+		z = coord[2];
+	}
+
+	void compute()
+	{
+		join{
+		for(int i = 0; i < stars.length; i++)
+		{
+			stars[i]<-getMaxDist()@check(token, stars[i]);
+		}
+		}@print();
+	}
+
+	void success()
+	{
+		//nice job
+	}
+	void print()
+	{
+		standardOutput<-println("Ideal Hub Star with a minimum maximal distance of " + minMaximalDist)@
+		standardOutput<-println("	located at (" + x + "," + y + "," + z + ")")@currentContinuation;
+	}
+}

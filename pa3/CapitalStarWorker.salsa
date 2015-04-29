@@ -1,0 +1,92 @@
+module pa3;
+
+import java.util.Arrays;
+
+behavior CapitalStarWorker
+{
+	Star stars[];
+	Double x, y, z;
+	Double dist;
+	int workerNum = 0;
+	int range = 0;
+	int overflow = 0;
+
+	CapitalStarWorker(Star _stars[], int _range, int _workerNum, int _overflow)
+	{
+		stars = _stars;
+		stars[0]<-getAvgDist()@setDist(token);
+		stars[0]<-getCoord()@setCoord(token);
+		range = _range;
+		workerNum = _workerNum;
+		overflow = _overflow;
+	}
+
+	void setDist(Double _dist)
+	{
+		dist = _dist;
+	}
+
+	void setCoord(Double coord[])
+	{
+		x = coord[0];
+		y = coord[1];
+		z = coord[2];
+	}
+
+	int findBest(Object arr[])
+	{
+		int index = -1;
+		for(int i = 0; i < arr.length; i++)
+		{
+			//standardOutput <- println("Checking dist: " + (Double)arr[i]);
+			if((Double)arr[i] < dist)
+			{
+				dist = (Double) arr[i];
+				index = i;
+			}
+		}
+
+		return index;
+	}
+
+	void updateIdeal(int index, int beginning)
+	{
+		if(index != -1)
+		{
+			stars[beginning+index]<-getCoord()@setCoord(token)@
+			stars[beginning+index]<-getAvgDist()@setDist(token);
+		}
+
+		
+	}
+
+	void check()
+	{
+		int beginning = range * workerNum;
+		int ending = beginning+range+overflow;
+
+		//standardOutput<-println("beginning: " + beginning + " / ending: " + ending);
+		join
+		{
+			for(int i = beginning; i < ending; i++)
+			{
+				stars[i]<-getAvgDist();
+			}
+		}@findBest(token)@updateIdeal(token, beginning)@currentContinuation;
+		
+	}
+
+	Double getDist()
+	{
+		return dist;
+	}
+
+	Double[] getCoord()
+	{
+		Double coord[] = new Double[3];
+		coord[0] = x;
+		coord[1] = y;
+		coord[2] = z;
+		return coord;
+	}
+}

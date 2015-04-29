@@ -1,0 +1,91 @@
+module pa3;
+
+import java.util.Arrays;
+
+behavior CapitalStar
+{
+	Star stars[];
+	Double dist;
+	Double x, y, z;
+	int numWorkers;
+
+	CapitalStar(Star _stars[], int _numWorkers)
+	{
+		stars = _stars;
+		stars[0]<-getAvgDist()@updateDist(token);
+		stars[0]<-getCoord()@updateCoord(token);
+		numWorkers = _numWorkers;
+	}
+
+	void updateDist(Double _dist)
+	{
+		dist = _dist;
+	}
+
+	void updateCoord(Double coord[])
+	{
+		x = coord[0];
+		y = coord[1];
+		z = coord[2];
+	}
+
+	void findBest(Object distances[], CapitalStarWorker drones[])
+	{
+		int index = 0;
+		for(int i = 0; i < distances.length; i++)
+		{
+			if((Double)distances[i] < dist)
+			{
+				dist = (Double)distances[i];
+				drones[i]<-getCoord()@updateCoord(token);
+			}
+		}
+	}
+
+	void finish(CapitalStarWorker drones[])
+	{
+		join
+		{
+			for(int i = 0; i < drones.length; i++)
+			{
+				drones[i]<-getDist();
+			}
+		}@findBest(token, drones)@currentContinuation;
+	}
+
+	void compute()
+	{
+		int overflow = stars.length % numWorkers;
+		int range = stars.length / numWorkers;
+		CapitalStarWorker drones[] = new CapitalStarWorker[numWorkers];
+		for(int i = 0; i < numWorkers; i++)
+		{
+			if(i != numWorkers-1)
+			{
+				drones[i] = new CapitalStarWorker(stars, range, i, 0);
+			}
+			else
+			{
+				drones[i] = new CapitalStarWorker(stars, range, i, overflow);
+			}
+		}
+		join
+		{
+			for(int i = 0; i < numWorkers; i++)
+			{
+				drones[i]<-check();
+			}
+		}@finish(drones)@print();
+	}
+
+	void success()
+	{
+		//nice job
+	}
+
+	void print()
+	{
+		standardOutput<-println("Ideal Capital Star with a minimum average distance of " + dist)@
+		standardOutput<-println("	Located at (" + x + "," + y + "," + z + ")")@currentContinuation;
+	}
+}

@@ -294,9 +294,10 @@ public class Star extends UniversalActor  {
 				// updateStats(token, other)
 				{
 					Object _arguments[] = { token_2_1, other };
-					Message message = new Message( self, self, "updateStats", _arguments, token_2_1, null );
+					Message message = new Message( self, self, "updateStats", _arguments, token_2_1, currentMessage.getContinuationToken() );
 					__messages.add( message );
 				}
+				throw new CurrentContinuationException();
 			}
 		}
 		public void updateStats(Double dist, Star other) {
@@ -325,43 +326,34 @@ public class Star extends UniversalActor  {
 			coord[2] = z;
 			return coord;
 		}
+		public void setCoord(Double coord[]) {
+			x = coord[0];
+			y = coord[1];
+			z = coord[2];
+		}
+		public Double getMinDist() {
+			return minDist;
+		}
+		public void setMinDist(Double dist) {
+			minDist = dist;
+		}
+		public Double getMaxDist() {
+			return maxDist;
+		}
+		public void setMaxDist(Double dist) {
+			maxDist = dist;
+		}
+		public Double getAvgDist() {
+			return avgDist;
+		}
+		public void setAvgDist(Double dist) {
+			avgDist = dist;
+		}
 		public void print() {
 			{
-				// standardOutput<-println("(x,y,z) = ("+x+","+y+","+z+")")
+				// standardOutput<-println("("+x+","+y+","+z+")")
 				{
-					Object _arguments[] = { "(x,y,z) = ("+x+","+y+","+z+")" };
-					Message message = new Message( self, standardOutput, "println", _arguments, null, null );
-					__messages.add( message );
-				}
-			}
-			{
-				// standardOutput<-println("minDist = "+minDist)
-				{
-					Object _arguments[] = { "minDist = "+minDist };
-					Message message = new Message( self, standardOutput, "println", _arguments, null, null );
-					__messages.add( message );
-				}
-			}
-			{
-				// standardOutput<-println("maxDist = "+maxDist)
-				{
-					Object _arguments[] = { "maxDist = "+maxDist };
-					Message message = new Message( self, standardOutput, "println", _arguments, null, null );
-					__messages.add( message );
-				}
-			}
-			{
-				// standardOutput<-println("avgDist = "+avgDist)
-				{
-					Object _arguments[] = { "avgDist = "+avgDist };
-					Message message = new Message( self, standardOutput, "println", _arguments, null, null );
-					__messages.add( message );
-				}
-			}
-			{
-				// standardOutput<-println("Total stars compared = "+count)
-				{
-					Object _arguments[] = { "Total stars compared = "+count };
+					Object _arguments[] = { "("+x+","+y+","+z+")" };
 					Message message = new Message( self, standardOutput, "println", _arguments, null, null );
 					__messages.add( message );
 				}

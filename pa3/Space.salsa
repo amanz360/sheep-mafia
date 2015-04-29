@@ -50,16 +50,22 @@ behavior Space
 	    			stars[i]<-compare(stars[j]);
 	    		}
 	    	}
-    	}@printStars(stars);
+    	}@findOptimalStars(stars);
     }
 
-    
+    void findOptimalStars(Star stars[])
+    {
+        HubStar hub = new HubStar(stars);
+        CapitalStar capital = new CapitalStar(stars, 5);
 
+        capital<-compute() : wait (1000);
+    }
+    
     void printStars(Star stars[])
     {
     	for(int i = 0; i < stars.length; i++)
     	{
-    		stars[i]<-print();
+            stars[i]<-print() : delay(50);
     	}
     }
 
