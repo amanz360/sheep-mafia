@@ -41,32 +41,32 @@ behavior Space
     		standardOutput<-println("ERR: Can't open file " + arguments[0]);
     	}
     	
-    	join
-    	{
-	    	for(int i = 0; i < numStars-1; i++)
+	    for(int i = 0; i < numStars-1; i++)
+	    {
+	    	for(int j = i+1; j < numStars; j++)
 	    	{
-	    		for(int j = i+1; j < numStars; j++)
-	    		{
-	    			stars[i]<-compare(stars[j]);
-	    		}
+	    		stars[i].compare(stars[j]);
 	    	}
-    	}@findOptimalStars(stars);
+	    }
+
+        //printStars(stars);
+        findOptimalStars(stars);
     }
 
     void findOptimalStars(Star stars[])
     {
-        HubStar hub = new HubStar(stars);
+        //HubStar hub = new HubStar(stars);
         CapitalStar capital = new CapitalStar(stars, 5);
 
-        capital<-compute() : wait (1000);
+        //hub<-compute();
+        capital<-compute()@capital<-print(token);
     }
     
     void printStars(Star stars[])
     {
     	for(int i = 0; i < stars.length; i++)
     	{
-            stars[i]<-print() : delay(50);
+            stars[i].print();
     	}
     }
-
 }

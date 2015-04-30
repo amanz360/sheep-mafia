@@ -14,8 +14,8 @@ behavior CapitalStarWorker
 	CapitalStarWorker(Star _stars[], int _range, int _workerNum, int _overflow)
 	{
 		stars = _stars;
-		stars[0]<-getAvgDist()@setDist(token);
-		stars[0]<-getCoord()@setCoord(token);
+		setDist(stars[0].getAvgDist());
+		setCoord(stars[0].getCoord());
 		range = _range;
 		workerNum = _workerNum;
 		overflow = _overflow;
@@ -33,15 +33,15 @@ behavior CapitalStarWorker
 		z = coord[2];
 	}
 
-	int findBest(Object arr[])
+	int findBest(Double distances[])
 	{
 		int index = -1;
-		for(int i = 0; i < arr.length; i++)
+		for(int i = 0; i < distances.length; i++)
 		{
 			//standardOutput <- println("Checking dist: " + (Double)arr[i]);
-			if((Double)arr[i] < dist)
+			if(distances[i] < dist)
 			{
-				dist = (Double) arr[i];
+				dist = distances[i];
 				index = i;
 			}
 		}
@@ -49,30 +49,32 @@ behavior CapitalStarWorker
 		return index;
 	}
 
-	void updateIdeal(int index, int beginning)
+	int updateIdeal(int index, int beginning)
 	{
 		if(index != -1)
 		{
-			stars[beginning+index]<-getCoord()@setCoord(token)@
-			stars[beginning+index]<-getAvgDist()@setDist(token);
+			setCoord(stars[beginning+index].getCoord());
+			setDist(stars[beginning+index].getAvgDist());
 		}
 
-		
+		return 1;		
 	}
 
-	void check()
+	int check()
 	{
 		int beginning = range * workerNum;
 		int ending = beginning+range+overflow;
 
 		//standardOutput<-println("beginning: " + beginning + " / ending: " + ending);
-		join
+		Double distances[] = new Double[range+overflow];	
+		int count = 0;
+		for(int i = beginning; i < ending; i++)
 		{
-			for(int i = beginning; i < ending; i++)
-			{
-				stars[i]<-getAvgDist();
-			}
-		}@findBest(token)@updateIdeal(token, beginning)@currentContinuation;
+			//standardOutput<-println("workerNum: " + workerNum + " - " + i);
+			distances[count] = stars[i].getAvgDist();
+			count++;
+		}
+		findBest(distances)@updateIdeal(token, beginning)@currentContinuation;
 		
 	}
 

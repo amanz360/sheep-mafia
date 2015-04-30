@@ -272,32 +272,18 @@ public class CapitalStarWorker extends UniversalActor  {
 		void construct(Star _stars[], int _range, int _workerNum, int _overflow){
 			stars = _stars;
 						{
-				Token token_2_0 = new Token();
-				// stars[0]<-getAvgDist()
+				// setDist(stars[0].getAvgDist())
 				{
-					Object _arguments[] = {  };
-					Message message = new Message( self, stars[0], "getAvgDist", _arguments, null, token_2_0 );
-					__messages.add( message );
-				}
-				// setDist(token)
-				{
-					Object _arguments[] = { token_2_0 };
-					Message message = new Message( self, self, "setDist", _arguments, token_2_0, null );
+					Object _arguments[] = { stars[0].getAvgDist() };
+					Message message = new Message( self, self, "setDist", _arguments, null, null );
 					__messages.add( message );
 				}
 			}
 						{
-				Token token_2_0 = new Token();
-				// stars[0]<-getCoord()
+				// setCoord(stars[0].getCoord())
 				{
-					Object _arguments[] = {  };
-					Message message = new Message( self, stars[0], "getCoord", _arguments, null, token_2_0 );
-					__messages.add( message );
-				}
-				// setCoord(token)
-				{
-					Object _arguments[] = { token_2_0 };
-					Message message = new Message( self, self, "setCoord", _arguments, token_2_0, null );
+					Object _arguments[] = { stars[0].getCoord() };
+					Message message = new Message( self, self, "setCoord", _arguments, null, null );
 					__messages.add( message );
 				}
 			}
@@ -313,78 +299,58 @@ public class CapitalStarWorker extends UniversalActor  {
 			y = coord[1];
 			z = coord[2];
 		}
-		public int findBest(Object arr[]) {
+		public int findBest(Double distances[]) {
 			int index = -1;
-			for (int i = 0; i<arr.length; i++){
-				if ((Double)arr[i]<dist) {{
-					dist = (Double)arr[i];
+			for (int i = 0; i<distances.length; i++){
+				if (distances[i]<dist) {{
+					dist = distances[i];
 					index = i;
 				}
 }			}
 			return index;
 		}
-		public void updateIdeal(int index, int beginning) {
+		public int updateIdeal(int index, int beginning) {
 			if (index!=-1) {{
 				{
-					Token token_3_0 = new Token();
-					Token token_3_1 = new Token();
-					Token token_3_2 = new Token();
-					// stars[beginning+index]<-getCoord()
+					// setCoord(stars[beginning+index].getCoord())
 					{
-						Object _arguments[] = {  };
-						Message message = new Message( self, stars[beginning+index], "getCoord", _arguments, null, token_3_0 );
+						Object _arguments[] = { stars[beginning+index].getCoord() };
+						Message message = new Message( self, self, "setCoord", _arguments, null, null );
 						__messages.add( message );
 					}
-					// setCoord(token)
+				}
+				{
+					// setDist(stars[beginning+index].getAvgDist())
 					{
-						Object _arguments[] = { token_3_0 };
-						Message message = new Message( self, self, "setCoord", _arguments, token_3_0, token_3_1 );
-						__messages.add( message );
-					}
-					// stars[beginning+index]<-getAvgDist()
-					{
-						Object _arguments[] = {  };
-						Message message = new Message( self, stars[beginning+index], "getAvgDist", _arguments, token_3_1, token_3_2 );
-						__messages.add( message );
-					}
-					// setDist(token)
-					{
-						Object _arguments[] = { token_3_2 };
-						Message message = new Message( self, self, "setDist", _arguments, token_3_2, null );
+						Object _arguments[] = { stars[beginning+index].getAvgDist() };
+						Message message = new Message( self, self, "setDist", _arguments, null, null );
 						__messages.add( message );
 					}
 				}
 			}
-}		}
-		public void check() {
+}			return 1;
+		}
+		public int check() {
 			int beginning = range*workerNum;
 			int ending = beginning+range+overflow;
+			Double distances[] = new Double[range+overflow];
+			int count = 0;
+			for (int i = beginning; i<ending; i++){
+				distances[count] = stars[i].getAvgDist();
+				count++;
+			}
 			{
 				Token token_2_0 = new Token();
-				Token token_2_1 = new Token();
-				// join block
-				token_2_0.setJoinDirector();
-				for (int i = beginning; i<ending; i++){
-					{
-						// stars[i]<-getAvgDist()
-						{
-							Object _arguments[] = {  };
-							Message message = new Message( self, stars[i], "getAvgDist", _arguments, null, token_2_0 );
-							__messages.add( message );
-						}
-					}
-				}
-				addJoinToken(token_2_0);
-				// findBest(token)
+				// findBest(distances)
 				{
-					Object _arguments[] = { token_2_0 };
-					Message message = new Message( self, self, "findBest", _arguments, token_2_0, token_2_1 );
+					Object _arguments[] = { distances };
+					Message message = new Message( self, self, "findBest", _arguments, null, token_2_0 );
 					__messages.add( message );
 				}
 				// updateIdeal(token, beginning)
 				{
-					Object _arguments[] = { token_2_1, beginning };
-					Message message = new Message( self, self, "updateIdeal", _arguments, token_2_1, currentMessage.getContinuationToken() );
+					Object _arguments[] = { token_2_0, beginning };
+					Message message = new Message( self, self, "updateIdeal", _arguments, token_2_0, currentMessage.getContinuationToken() );
 					__messages.add( message );
 				}
 				throw new CurrentContinuationException();

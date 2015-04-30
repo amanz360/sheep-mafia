@@ -3,8 +3,9 @@ package pa3;
 import java.lang.*;
 import java.io.*;
 import java.util.*;
+import java.io.Serializable;
 
-public class StarJava
+public class Star implements Serializable
 {
     Double x, y, z;
     Double minDist = -1.0, maxDist = 0.0;
@@ -23,26 +24,19 @@ public class StarJava
         return Math.sqrt(Math.pow(x-otherData[0],2) + Math.pow(y-otherData[1],2) + Math.pow(z-otherData[2],2));
     }
 
-    void compare(Star other)
+    void compare(Star trek)
     {
-        Double otherCoord[] = other.getCoord();
-        Double dist = getDist(otherCoord);
-        updateStats(dist, other)
+        Double distance = this.getDist(trek.getCoord());
+        this.updateStats(distance);
+        trek.updateStats(distance);
     }
 
-    void updateStats(Double dist, Star other)
+    void updateStats(Double dist)
     {
         if(minDist == -1 || dist < minDist) minDist = dist;
         if(dist > maxDist)  maxDist = dist;
         avgDist = (avgDist*count + dist)/++count;
     }
-
-    /*void getUpdate(Double dist)
-    {
-        if(minDist == -1 || dist < minDist) minDist = dist;
-        if(dist > maxDist)  maxDist = dist;
-        avgDist = (avgDist*count + dist)/++count;
-    }*/
 
     Double[] getCoord()
     {
@@ -91,10 +85,10 @@ public class StarJava
     }
     void print()
     {
-        standardOutput <- println("(" + x + "," + y + "," + z + ")");
-        //standardOutput <- println("minDist = " + minDist);
-        //standardOutput <- println("maxDist = " + maxDist);
-        //standardOutput <- println("avgdist = " + avgDist);
-        //standardOutput <- println("Compared " + count + " stars");
+        System.out.println("(" + x + "," + y + "," + z + ")");
+        System.out.println("minDist = " + minDist);
+        System.out.println("maxDist = " + maxDist);
+        System.out.println("avgdist = " + avgDist);
+        System.out.println("Compared " + count + " stars");
     }
 }

@@ -292,7 +292,7 @@ public class Space extends UniversalActor  {
 					Double x = Double.parseDouble(nums[0]);
 					Double y = Double.parseDouble(nums[1]);
 					Double z = Double.parseDouble(nums[2]);
-					stars[i] = ((Star)new Star(this).construct(x, y, z));
+					stars[i] = new Star(x, y, z);
 				}
 				in.close();
 			}
@@ -307,57 +307,41 @@ public class Space extends UniversalActor  {
 				}
 			}
 
-			{
-				Token token_2_0 = new Token();
-				// join block
-				token_2_0.setJoinDirector();
-				for (int i = 0; i<numStars-1; i++){
-					for (int j = i+1; j<numStars; j++){
-						{
-							// stars[i]<-compare(stars[j])
-							{
-								Object _arguments[] = { stars[j] };
-								Message message = new Message( self, stars[i], "compare", _arguments, null, token_2_0 );
-								__messages.add( message );
-							}
-						}
-					}
+			for (int i = 0; i<numStars-1; i++){
+				for (int j = i+1; j<numStars; j++){
+					stars[i].compare(stars[j]);
 				}
-				addJoinToken(token_2_0);
+			}
+			{
 				// findOptimalStars(stars)
 				{
 					Object _arguments[] = { stars };
-					Message message = new Message( self, self, "findOptimalStars", _arguments, token_2_0, null );
+					Message message = new Message( self, self, "findOptimalStars", _arguments, null, null );
 					__messages.add( message );
 				}
 			}
 		}
 		public void findOptimalStars(Star stars[]) {
-			HubStar hub = ((HubStar)new HubStar(this).construct(stars));
 			CapitalStar capital = ((CapitalStar)new CapitalStar(this).construct(stars, 5));
 			{
+				Token token_2_0 = new Token();
 				// capital<-compute()
 				{
 					Object _arguments[] = {  };
-					Message message = new Message( self, capital, "compute", _arguments, null, null );
-					Object[] _propertyInfo = { new Integer(1000) };
-					message.setProperty( "wait", _propertyInfo );
+					Message message = new Message( self, capital, "compute", _arguments, null, token_2_0 );
+					__messages.add( message );
+				}
+				// capital<-print(token)
+				{
+					Object _arguments[] = { token_2_0 };
+					Message message = new Message( self, capital, "print", _arguments, token_2_0, null );
 					__messages.add( message );
 				}
 			}
 		}
 		public void printStars(Star stars[]) {
 			for (int i = 0; i<stars.length; i++){
-				{
-					// stars[i]<-print()
-					{
-						Object _arguments[] = {  };
-						Message message = new Message( self, stars[i], "print", _arguments, null, null );
-						Object[] _propertyInfo = { new Integer(50) };
-						message.setProperty( "delay", _propertyInfo );
-						__messages.add( message );
-					}
-				}
+				stars[i].print();
 			}
 		}
 	}

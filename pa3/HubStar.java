@@ -272,7 +272,7 @@ public class HubStar extends UniversalActor  {
 		public void setDist(Double dist) {
 			minMaximalDist = dist;
 		}
-		public void check(Double dist, Star star) {
+		public int check(Double dist, Star star) {
 			if (minMaximalDist==-1.0||dist<minMaximalDist) {{
 				{
 					Token token_3_0 = new Token();
@@ -298,7 +298,8 @@ public class HubStar extends UniversalActor  {
 					throw new CurrentContinuationException();
 				}
 			}
-}		}
+}			return 1;
+		}
 		public void setCoord(Double coord[]) {
 			x = coord[0];
 			y = coord[1];
@@ -327,17 +328,15 @@ public class HubStar extends UniversalActor  {
 					}
 				}
 				addJoinToken(token_2_0);
-				// print()
+				// print(token)
 				{
-					Object _arguments[] = {  };
+					Object _arguments[] = { token_2_0 };
 					Message message = new Message( self, self, "print", _arguments, token_2_0, null );
 					__messages.add( message );
 				}
 			}
 		}
-		public void success() {
-		}
-		public void print() {
+		public void print(Object success[]) {
 			{
 				Token token_2_0 = new Token();
 				// standardOutput<-println("Ideal Hub Star with a minimum maximal distance of "+minMaximalDist)

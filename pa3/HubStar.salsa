@@ -18,13 +18,15 @@ behavior HubStar
 		minMaximalDist = dist;
 	}
 
-	void check(Double dist, Star star)
+	int check(Double dist, Star star)
 	{
 		if(minMaximalDist == -1.0 || dist < minMaximalDist)
 		{
 			setDist(dist)@
 			star<-getCoord()@setCoord(token)@currentContinuation;
 		}
+
+		return 1;
 	}
 
 	void setCoord(Double coord[])
@@ -36,19 +38,16 @@ behavior HubStar
 
 	void compute()
 	{
-		join{
-		for(int i = 0; i < stars.length; i++)
-		{
-			stars[i]<-getMaxDist()@check(token, stars[i]);
-		}
-		}@print();
+		join
+		{	
+			for(int i = 0; i < stars.length; i++)
+			{
+				stars[i]<-getMaxDist()@check(token, stars[i]);
+			}
+		}@print(token);
 	}
 
-	void success()
-	{
-		//nice job
-	}
-	void print()
+	void print(Object success[])
 	{
 		standardOutput<-println("Ideal Hub Star with a minimum maximal distance of " + minMaximalDist)@
 		standardOutput<-println("	located at (" + x + "," + y + "," + z + ")")@currentContinuation;

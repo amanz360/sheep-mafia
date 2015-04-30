@@ -269,33 +269,12 @@ public class CapitalStar extends UniversalActor  {
 		int numWorkers;
 		void construct(Star _stars[], int _numWorkers){
 			stars = _stars;
+			dist = stars[0].getAvgDist();
 						{
-				Token token_2_0 = new Token();
-				// stars[0]<-getAvgDist()
+				// updateCoord(stars[0].getCoord())
 				{
-					Object _arguments[] = {  };
-					Message message = new Message( self, stars[0], "getAvgDist", _arguments, null, token_2_0 );
-					__messages.add( message );
-				}
-				// updateDist(token)
-				{
-					Object _arguments[] = { token_2_0 };
-					Message message = new Message( self, self, "updateDist", _arguments, token_2_0, null );
-					__messages.add( message );
-				}
-			}
-						{
-				Token token_2_0 = new Token();
-				// stars[0]<-getCoord()
-				{
-					Object _arguments[] = {  };
-					Message message = new Message( self, stars[0], "getCoord", _arguments, null, token_2_0 );
-					__messages.add( message );
-				}
-				// updateCoord(token)
-				{
-					Object _arguments[] = { token_2_0 };
-					Message message = new Message( self, self, "updateCoord", _arguments, token_2_0, null );
+					Object _arguments[] = { stars[0].getCoord() };
+					Message message = new Message( self, self, "updateCoord", _arguments, null, null );
 					__messages.add( message );
 				}
 			}
@@ -309,7 +288,7 @@ public class CapitalStar extends UniversalActor  {
 			y = coord[1];
 			z = coord[2];
 		}
-		public void findBest(Object distances[], CapitalStarWorker drones[]) {
+		public int findBest(Object distances[], CapitalStarWorker drones[]) {
 			int index = 0;
 			for (int i = 0; i<distances.length; i++){
 				if ((Double)distances[i]<dist) {{
@@ -331,8 +310,9 @@ public class CapitalStar extends UniversalActor  {
 					}
 				}
 }			}
+			return 1;
 		}
-		public void finish(CapitalStarWorker drones[]) {
+		public int finish(CapitalStarWorker drones[], Object success[]) {
 			{
 				Token token_2_0 = new Token();
 				// join block
@@ -357,7 +337,7 @@ public class CapitalStar extends UniversalActor  {
 				throw new CurrentContinuationException();
 			}
 		}
-		public void compute() {
+		public int compute() {
 			int overflow = stars.length%numWorkers;
 			int range = stars.length/numWorkers;
 			CapitalStarWorker drones[] = new CapitalStarWorker[numWorkers];
@@ -371,7 +351,6 @@ public class CapitalStar extends UniversalActor  {
 }			}
 			{
 				Token token_2_0 = new Token();
-				Token token_2_1 = new Token();
 				// join block
 				token_2_0.setJoinDirector();
 				for (int i = 0; i<numWorkers; i++){
@@ -385,23 +364,18 @@ public class CapitalStar extends UniversalActor  {
 					}
 				}
 				addJoinToken(token_2_0);
-				// finish(drones)
+				// finish(drones, token)
 				{
-					Object _arguments[] = { drones };
-					Message message = new Message( self, self, "finish", _arguments, token_2_0, token_2_1 );
+					Object _arguments[] = { drones, token_2_0 };
+					Message message = new Message( self, self, "finish", _arguments, token_2_0, currentMessage.getContinuationToken() );
 					__messages.add( message );
 				}
-				// print()
-				{
-					Object _arguments[] = {  };
-					Message message = new Message( self, self, "print", _arguments, token_2_1, null );
-					__messages.add( message );
-				}
+				throw new CurrentContinuationException();
 			}
 		}
 		public void success() {
 		}
-		public void print() {
+		public void print(int useless) {
 			{
 				Token token_2_0 = new Token();
 				// standardOutput<-println("Ideal Capital Star with a minimum average distance of "+dist)

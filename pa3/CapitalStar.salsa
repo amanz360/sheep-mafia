@@ -12,8 +12,8 @@ behavior CapitalStar
 	CapitalStar(Star _stars[], int _numWorkers)
 	{
 		stars = _stars;
-		stars[0]<-getAvgDist()@updateDist(token);
-		stars[0]<-getCoord()@updateCoord(token);
+		dist = stars[0].getAvgDist();
+		updateCoord(stars[0].getCoord());
 		numWorkers = _numWorkers;
 	}
 
@@ -29,7 +29,7 @@ behavior CapitalStar
 		z = coord[2];
 	}
 
-	void findBest(Object distances[], CapitalStarWorker drones[])
+	int findBest(Object distances[], CapitalStarWorker drones[])
 	{
 		int index = 0;
 		for(int i = 0; i < distances.length; i++)
@@ -40,9 +40,11 @@ behavior CapitalStar
 				drones[i]<-getCoord()@updateCoord(token);
 			}
 		}
+
+		return 1;
 	}
 
-	void finish(CapitalStarWorker drones[])
+	int finish(CapitalStarWorker drones[], Object success[])
 	{
 		join
 		{
@@ -53,7 +55,7 @@ behavior CapitalStar
 		}@findBest(token, drones)@currentContinuation;
 	}
 
-	void compute()
+	int compute()
 	{
 		int overflow = stars.length % numWorkers;
 		int range = stars.length / numWorkers;
@@ -75,7 +77,7 @@ behavior CapitalStar
 			{
 				drones[i]<-check();
 			}
-		}@finish(drones)@print();
+		}@finish(drones, token)@currentContinuation;
 	}
 
 	void success()
@@ -83,7 +85,7 @@ behavior CapitalStar
 		//nice job
 	}
 
-	void print()
+	void print(int useless)
 	{
 		standardOutput<-println("Ideal Capital Star with a minimum average distance of " + dist)@
 		standardOutput<-println("	Located at (" + x + "," + y + "," + z + ")")@currentContinuation;
